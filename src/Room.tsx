@@ -25,7 +25,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     top: 0,
     left: 0,
     width: '100%', //'50%',
-    height: '60%', //'50%',
+    height: '70%', //'50%',
     transform: `translate3d(${100 * column}%, ${100 * row}%, 0)`,  
   }
   
@@ -74,7 +74,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
 
   const syncStatus = useCallback(() => {
     setStatus('syncing')
-    fetch(endpoint)
+    fetch(`${endpoint}/status`)
       .then(res => res.json())
       .then(data => {
         if ( data.error ) {

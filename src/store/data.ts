@@ -4,7 +4,7 @@ export const rooms: RoomInterface[] = [
   {
     id: 1,
     name: "Living Room",
-    endpoint: "https://0794-190-218-46-203.ngrok-free.app/status",
+    endpoint: "https://e335-190-218-46-203.ngrok-free.app",
     temperature: 0,
     humidity: 0,
     connected: true,
