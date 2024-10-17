@@ -25,7 +25,8 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     top: 0,
     left: 0,
     width: '100%', //'50%',
-    height: '70%', //'50%',
+    height: 'auto', //'50%',
+    aspectRatio: '1 / 1',
     transform: `translate3d(${100 * column}%, ${100 * row}%, 0)`,  
   }
   
@@ -79,7 +80,10 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
       .then(data => {
         if ( data.error ) {
           setSyncStamp(`[Error: ${data.error}] - ${new Date().toLocaleString()}`)
-          return console.error(data.error)
+          console.error(data.error)
+          console.log("There was an error getting the room status. Trying again...")
+          syncStatus()
+          return
         }
         setSyncStamp(`Updated - ${new Date().toLocaleString()}`)
         updateRoom(id, data)
