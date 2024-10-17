@@ -48,7 +48,7 @@ export const rooms: RoomInterface[] = [
   //   humidity: 75,
   //   connected: true,
   //   thermostat: {
-  //     on: true,
+  //     on: false,
   //     temperature: 24,
   //     speed: 2,
   //   }

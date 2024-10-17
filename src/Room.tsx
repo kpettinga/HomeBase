@@ -24,7 +24,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     position: 'absolute',
     top: 0,
     left: 0,
-    width: '100%', //'50%',
+    width: '100%',
     height: 'auto', //'50%',
     aspectRatio: '1 / 1',
     transform: `translate3d(${100 * column}%, ${100 * row}%, 0)`,  
@@ -75,11 +75,11 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
 
   const syncStatus = useCallback(() => {
     setStatus('syncing')
+    setSyncStamp(`syncing...`)
     fetch(`${endpoint}/status`)
       .then(res => res.json())
       .then(data => {
         if ( data.error ) {
-          setSyncStamp(`[Error: ${data.error}] - ${new Date().toLocaleString()}`)
           console.error(data.error)
           console.log("There was an error getting the room status. Trying again...")
           syncStatus()
