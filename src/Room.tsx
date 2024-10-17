@@ -54,7 +54,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     const time = new Date().getTime() - touchStartTime
     if ( time < 750 ) {
       setStatus('syncing')
-      fetch(`https://30b9-190-218-46-203.ngrok-free.app/power`, {method: 'POST'})
+      fetch(`${endpoint}/power`, {method: 'POST'})
         .then(res => res.json())
         .then(({output, error}) => {
           console.log(output);
