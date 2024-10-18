@@ -1,50 +1,33 @@
-# React + TypeScript + Vite
+# HomeBase
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **HomeBase** is a web app that remotely controls, via websockets, single-board computers (e.g. Raspberry Pi, Arduino Nano, etc) which are placed in close proximity to mini-split AC units. It is still in early alpha with lots of features currently in development.
 
-Currently, two official plugins are available:
+**Preview:**
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+|![Dashboard](/public/dashboard.png)|![Room](/public/room.png)|
+|-|-|
 
-## Expanding the ESLint configuration
+This project is my solution to modern home climate control when no central heating or air conditioning systems are available. 
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+I live in a tropical climate and my home only has mini-split AC units (condenser outside, fan inside) in each room. By default, they are not connected and I must be physically present to control them. This causes problems for situations like going out of town. Extremely high day-time temperatures cause the house to become very warm an, since it is very humid, especially in the rainy season, its common to get mold growing in the house and in the AC units themselves.
 
-- Configure the top-level `parserOptions` property like this:
+---
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+**Current planned feature list:**
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+- [x] Read current temperature and humidity
+- Air conditioning unit control
+  - [ ] Set temperature
+  - [ ] Set fan speed
+  - [ ] Toggle On/Off
+- [ ] Use websockets (instead of pinging an endpoint) for realtime monitoring of climate and AC unit status.
+- Bootstrap process for setting up new SBC device
+  - [ ] Linux tools (lirc, tmux, ngrok, node, python3, etc)
+  - [ ] Python script for reading sensor data
+  - [ ] Node script for server
+  - likely more...
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+**Further down the road:**
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- Security camera integration
+- ???
