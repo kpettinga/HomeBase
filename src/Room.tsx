@@ -56,15 +56,14 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
       setStatus('syncing')
       fetch(`${endpoint}/power`, {method: 'POST'})
         .then(res => res.json())
-        .then(({output, error}) => {
-          console.log(output);
+        .then(({error}) => {
           if ( error ) {
-            return console.log(error)
+            return console.error(error)
           }
           updateRoom(id, { thermostat : { ...thermostat, on: !thermostat.on } })
         })
         .catch(err => {
-          console.log(err)
+          console.error(err)
         })
         .finally(() => {
           setStatus('default')
@@ -80,8 +79,8 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
       .then(res => res.json())
       .then(data => {
         if ( data.error ) {
-          console.error(data.error)
-          console.log("There was an error getting the room status. Trying again...")
+          console.warn(data.error)
+          console.warn("There was an error getting the room status. Trying again...")
           syncStatus()
           return
         }
@@ -99,11 +98,11 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
 
   const handleTogglePower = (on: boolean) => {
     setStatus('syncing')
+    console.log('status set to syncing...')
     setSyncStamp(`syncing...`)
     fetch(`${endpoint}/power`, {method: 'POST'})
       .then(res => res.json())
-      .then(({output, error}) => {
-        console.log(output, `on: ${on}`);
+      .then(({error}) => {
         if ( error ) {
           setSyncStamp('Response error')
           return console.error(error)
@@ -121,7 +120,6 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   }
 
   useEffect(() => {
-    console.log('syncing status', syncStatus);
     syncStatus()
     const intervalId = setInterval(syncStatus, 1000 * 60 * 10)
     return () => clearInterval(intervalId)
@@ -167,7 +165,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           thermostat={thermostat} 
           className="absolute inset-0" 
           onTogglePower={handleTogglePower}
-          onUpdate={ thermostat => { console.log('thermostat', thermostat); updateRoom(id, { thermostat })} }
+          onUpdate={ thermostat => updateRoom(id, { thermostat }) }
           />
       </div>
 
