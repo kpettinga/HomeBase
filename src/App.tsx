@@ -13,12 +13,20 @@ import Weather from "./Weather"
  * The color is a gradient from red in the morning to blue in the evening.
  * The gradient is interpolated linearly over the 24 hour period.
  */
-function getBackgroundColor(date?: Date) : string {
+function getAppColor(date?: Date) : string {
   const d = date || new Date()
   const decimalMinutes = d.getMinutes() / 60
   const decimalHours = d.getHours() + decimalMinutes
   const hue = Math.floor((decimalHours / 24) * 360)
   return `hsl(${hue.toString()}, 70%, 85%)`
+}
+
+function updateAppColor() {
+  const appColor = getAppColor()
+  document.documentElement.style.backgroundColor = appColor
+  const metaThemeColor = document.querySelector('meta[name="theme-color"]')
+  // @ts-expect-error The meta tag should always exist
+  if ( metaThemeColor ) metaThemeColor.content = appColor
 }
 
 const App: React.FC = () => {
@@ -27,9 +35,9 @@ const App: React.FC = () => {
   const activeRoom = useRoomStore( state => state.activeRoom )
 
   useEffect(() => {    
-    document.documentElement.style.backgroundColor = getBackgroundColor()
+    updateAppColor()
     const interval = setInterval(() => {
-      document.documentElement.style.backgroundColor = getBackgroundColor()
+      updateAppColor()
     }, 1000 * 60)
     return () => clearInterval(interval)
   }, [])
