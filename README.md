@@ -2,8 +2,8 @@
 
 > **HomeBase** is a web app that remotely controls, via websockets, single-board computers (e.g. Raspberry Pi, Arduino Nano, etc) which are placed in close proximity to mini-split AC units. It is still in early alpha with lots of features currently in development.
 
-**Preview:**
-
+|Dashboard|Thermostat Control|
+|-|-|
 |![Dashboard](/public/dashboard.png)|![Room](/public/room.png)|
 |-|-|
 
