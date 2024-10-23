@@ -19,7 +19,7 @@ jobs:
           node-version: '22'  # Change this to your desired Node.js version
       
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       
       - name: Build project
         run: npm run build  # or 'npm run build:prod' if you have a production build
