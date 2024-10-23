@@ -76,7 +76,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   const syncStatus = useCallback(() => {
     setStatus('syncing')
     setSyncStamp(`syncing...`)
-    fetch(`${endpoint}/status`)
+    fetch(`${endpoint}/status?t=${new Date().getTime()}`)
       .then(res => res.json())
       .then(data => {
         if ( data.error ) {
@@ -85,15 +85,43 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           syncStatus()
           return
         }
-        setSyncStamp(`Updated - ${new Date().toLocaleString()}`)
         updateRoom(id, data)
+        setSyncStamp(new Date().toLocaleString())
+      })
+      .catch(err => {
+        console.error(err)
+        syncStatus()
       })
       .finally(() => {
         setStatus('default')
       })
   }, [endpoint, id, updateRoom])
 
+  const handleTogglePower = (on: boolean) => {
+    setStatus('syncing')
+    setSyncStamp(`syncing...`)
+    fetch(`${endpoint}/power`, {method: 'POST'})
+      .then(res => res.json())
+      .then(({output, error}) => {
+        console.log(output, `on: ${on}`);
+        if ( error ) {
+          setSyncStamp('Response error')
+          return console.error(error)
+        }
+        updateRoom(id, { thermostat : { ...thermostat, on: on } })
+        setSyncStamp(new Date().toLocaleString())
+      })
+      .catch(err => {
+        setSyncStamp('Request error')
+        console.error(err)
+      })
+      .finally(() => {
+        setStatus('default')
+      })
+  }
+
   useEffect(() => {
+    console.log('syncing status', syncStatus);
     syncStatus()
     const intervalId = setInterval(syncStatus, 1000 * 60 * 10)
     return () => clearInterval(intervalId)
@@ -138,6 +166,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           active={isActive} 
           thermostat={thermostat} 
           className="absolute inset-0" 
+          onTogglePower={handleTogglePower}
           onUpdate={ thermostat => { console.log('thermostat', thermostat); updateRoom(id, { thermostat })} }
           />
       </div>

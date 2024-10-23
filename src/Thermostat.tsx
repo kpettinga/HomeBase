@@ -13,9 +13,10 @@ interface ThermostatProps {
   className?: string
   active?: boolean,
   thermostat: ThermostatInterface
+  onTogglePower: (on: boolean) => void
   onUpdate: (thermostat: ThermostatInterface) => void
 }
-const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, onUpdate }) => {
+const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, onTogglePower, onUpdate }) => {
 
   const dialTrackRef = useRef<SVGGElement>(null)
 
@@ -93,8 +94,8 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
           transition-all
           ${ active ? 'opacity-100 delay-500' : 'opacity-0 pointer-events-none -translate-x-2' }
         `}>
-          <button className={`py-1 ${thermostat.on ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, on: true })}>On</button>
-          <button className={`py-1 ${thermostat.on ? 'opacity-30' : 'opacity-100'}`} onTouchEnd={() => onUpdate({ ...thermostat, on: false })}>Off</button>
+          <button className={`py-1 ${thermostat.on ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onTogglePower(true)}>On</button>
+          <button className={`py-1 ${thermostat.on ? 'opacity-30' : 'opacity-100'}`} onTouchEnd={() => onTogglePower(false)}>Off</button>
       </div>
      
       <div 

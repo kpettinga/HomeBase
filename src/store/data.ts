@@ -1,10 +1,11 @@
+import { APP_URL } from "../constants";
 import { RoomInterface } from "../types";
 
 export const rooms: RoomInterface[] = [
   {
     id: 1,
     name: "Living Room",
-    endpoint: "https://e335-190-218-46-203.ngrok-free.app",
+    endpoint: APP_URL,
     temperature: 0,
     humidity: 0,
     connected: true,

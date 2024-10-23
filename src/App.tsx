@@ -26,7 +26,7 @@ const App: React.FC = () => {
   const rooms = useRoomStore( state => state.rooms as RoomInterface[] )
   const activeRoom = useRoomStore( state => state.activeRoom )
 
-  useEffect(() => {
+  useEffect(() => {    
     document.documentElement.style.backgroundColor = getBackgroundColor()
     const interval = setInterval(() => {
       document.documentElement.style.backgroundColor = getBackgroundColor()
