@@ -11,7 +11,7 @@ interface RoomProps {
   column: number
 }
 
-const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
+const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, cpu_temp, memory_used, thermostat, endpoint }) => {
   
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
@@ -77,14 +77,14 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     setSyncStamp(`syncing...`)
     fetch(`${endpoint}/status?t=${new Date().getTime()}`)
       .then(res => res.json())
-      .then(data => {
-        if ( data.error ) {
-          console.warn(data.error)
+      .then(({error, cpu_temp, memory_used, sensor_data: { error: sensor_error, temperature, humidity } }) => {
+        if ( error || sensor_error ) {
+          console.warn(error || sensor_error)
           console.warn("There was an error getting the room status. Trying again...")
-          syncStatus()
+          setTimeout(() => syncStatus(), 2000)
           return
         }
-        updateRoom(id, data)
+        updateRoom(id, { temperature, humidity, cpu_temp, memory_used })
         setSyncStamp(new Date().toLocaleString())
       })
       .catch(err => {
@@ -169,21 +169,25 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           />
       </div>
 
-      <div className={`absolute bottom-5 left-6 right-6 flex items-end gap-2 transition-all text-[55px] font-black leading-[0.7]`}>
-        <span className="relative">
-          {temperature}&deg; 
-          <small className={`absolute bottom-0 left-full text-xs leading-[0.8] transition-all ${ isActive ? 'opacity-100 delay-500' : 'opacity-0 -translate-x-2' }`}>Currently</small>
-        </span>
-        <span className={`relative ml-auto flex items-end gap-1 text-base font-black leading-[0.7]`}>
-          <small className={`absolute bottom-0 right-full mr-2 text-xs leading-[0.8] transition-all ${ isActive ? 'opacity-100 delay-500' : 'opacity-0 translate-x-2' }`}>Humidity: </small>
-          <svg width={ size === "large" ? "13" : "9" } height={ size === "large" ? "19" : "13" } viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M0 12.2704C0 15.9873 2.86827 19 6.40309 19C9.93909 19 13 15.9873 13 12.2704C13 8.55475 6.40309 0 6.40309 0C6.40309 0 0 8.55475 0 12.2704Z" fill="black"/>
-          </svg>
-          <span>{humidity}%</span>
-        </span>
+      <div className={`absolute bottom-4 left-6 right-6 flex items-end gap-2 transition-all`}>
+        <div className="flex items-end">
+          <span className="relative font-black leading-[0.7] text-[55px]">
+            {temperature}&deg; 
+          </span>
+          <span className={`relative flex items-end gap-1 text-base font-black leading-[0.7]`}>
+            <svg width={ size === "large" ? "13" : "9" } height={ size === "large" ? "19" : "13" } viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M0 12.2704C0 15.9873 2.86827 19 6.40309 19C9.93909 19 13 15.9873 13 12.2704C13 8.55475 6.40309 0 6.40309 0C6.40309 0 0 8.55475 0 12.2704Z" fill="black"/>
+            </svg>
+            <span>{humidity}%</span>
+          </span>
+        </div>
+        <div className="flex flex-col gap-1 ml-auto text-right">
+          <span className="text-xs leading-none"><strong className="font-black">cpu:</strong> {cpu_temp}&deg;</span>
+          <span className="text-xs leading-none"><strong className="font-black">mem:</strong> {memory_used}%</span>
+          <span className="text-xs leading-none">{syncStamp}</span>
+        </div>
       </div>
 
-      <small className="absolute bottom-0 left-6 leading-none opacity-30">{ syncStamp }</small>
     </div>
   )
 }

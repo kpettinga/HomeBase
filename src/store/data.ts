@@ -9,6 +9,8 @@ export const rooms: RoomInterface[] = [
     temperature: 0,
     humidity: 0,
     connected: true,
+    cpu_temp: 0,
+    memory_used: 0,
     thermostat: {
       on: false,
       temperature: 26,

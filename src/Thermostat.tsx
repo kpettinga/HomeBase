@@ -149,7 +149,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
           absolute top-1/2 -translate-y-1/2
           aspect-square h-auto 
           transition-all duration-500 
-          ${ active ? "right-0 w-[240dvw]" : "right-[10%] w-4/5" }
+          ${ active ? "right-0 w-[240dvw]" : "right-[20%] w-3/5" }
         `}
         >
         {/* <line x1="0" y1="500" x2="1000" y2="500" stroke="black" strokeWidth="1"/>
