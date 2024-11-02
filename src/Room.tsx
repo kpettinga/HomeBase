@@ -11,14 +11,14 @@ interface RoomProps {
   column: number
 }
 
-const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, cpu_temp, memory_used, thermostat, endpoint }) => {
+const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
   
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
   const [status, setStatus] = useState('default')
   const [timeoutId, setTimeoutId] = useState(0)
   const [touchStartTime, setTouchStartTime] = useState(0)
-  const [syncStamp, setSyncStamp] = useState('')
+  const [, setSyncStamp] = useState('')
   const touchMax = 750
 
   const style: React.CSSProperties = {
