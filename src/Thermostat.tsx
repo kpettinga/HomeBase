@@ -13,10 +13,9 @@ interface ThermostatProps {
   className?: string
   active?: boolean,
   thermostat: ThermostatInterface
-  onTogglePower: (on: boolean) => void
-  onUpdate: (thermostat: ThermostatInterface) => void
+  onSetTemperature: (temperature: number) => void
 }
-const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, onTogglePower, onUpdate }) => {
+const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, onSetTemperature }) => {
 
   const dialTrackRef = useRef<SVGGElement>(null)
 
@@ -49,7 +48,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
         dialTrackRef.current?.classList.remove('transition-all')
       }, 200)
     }
-    onUpdate({ ...thermostat, temperature: degreesToTemp(roundedDegree) })
+    onSetTemperature(degreesToTemp(roundedDegree))
     setRotation(roundedDegree)
   }
 
@@ -86,19 +85,6 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
       </div>
 
       <div 
-        data-elem="POWER"
-        className={`
-          absolute z-10 top-1/2 left-6 translate-y-[calc(-100%-82px)] 
-          font-black text-sm
-          flex flex-col gap-2
-          transition-all
-          ${ active ? 'opacity-100 delay-500' : 'opacity-0 pointer-events-none -translate-x-2' }
-        `}>
-          <button className={`py-1 ${thermostat.on ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onTogglePower(true)}>On</button>
-          <button className={`py-1 ${thermostat.on ? 'opacity-30' : 'opacity-100'}`} onTouchEnd={() => onTogglePower(false)}>Off</button>
-      </div>
-     
-      <div 
         data-elem="FAN" 
         className={`
           absolute top-1/2 -translate-y-1/2 transition-all duration-500 
@@ -123,7 +109,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
         {/* <strong className="absolute top-1/2 left-full -translate-y-1/2">{thermostat.temperature}</strong> */}
       </div>
 
-      <div 
+      {/* <div 
         data-elem="SPEED"
         className={`
           absolute z-10 top-1/2 left-6 translate-y-1/2
@@ -136,7 +122,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
           <button className={`py-1 ${thermostat.speed === 2 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 2 })}>Med</button>
           <button className={`py-1 ${thermostat.speed === 1 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 1 })}>Lo</button>
           <button className={`py-1 ${thermostat.speed === 0 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 0 })}>Auto</button>
-      </div>
+      </div> */}
           
       <svg 
         data-elem="DIAL"

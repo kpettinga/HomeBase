@@ -19,6 +19,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   const [timeoutId, setTimeoutId] = useState(0)
   const [touchStartTime, setTouchStartTime] = useState(0)
   const [syncStamp, setSyncStamp] = useState('')
+  const touchMax = 750
 
   const style: React.CSSProperties = {
     position: 'absolute',
@@ -44,30 +45,16 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
       setTimeout(() => {
         setActiveRoom(id)
         navigator.vibrate(10)
-      }, 750)
+      }, touchMax)
     )
   }
   
   function handleTouchEnd() {
     setStatus('default')
     clearTimeout(timeoutId)
-    const time = new Date().getTime() - touchStartTime
-    if ( time < 750 ) {
-      setStatus('syncing')
-      fetch(`${endpoint}/power`, {method: 'POST'})
-        .then(res => res.json())
-        .then(({error}) => {
-          if ( error ) {
-            return console.error(error)
-          }
-          updateRoom(id, { thermostat : { ...thermostat, on: !thermostat.on } })
-        })
-        .catch(err => {
-          console.error(err)
-        })
-        .finally(() => {
-          setStatus('default')
-        })
+    const touchDuration = new Date().getTime() - touchStartTime
+    if ( touchDuration < touchMax ) {
+      setPower(!thermostat.on)
     }
     setTouchStartTime(0)
   }
@@ -81,7 +68,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
         if ( error || sensor_error ) {
           console.warn(error || sensor_error)
           console.warn("There was an error getting the room status. Trying again...")
-          setTimeout(() => syncStatus(), 2000)
+          // setTimeout(() => syncStatus(), 2000)
           return
         }
         updateRoom(id, { temperature, humidity, cpu_temp, memory_used })
@@ -89,29 +76,76 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
       })
       .catch(err => {
         console.error(err)
-        syncStatus()
+        // syncStatus()
       })
       .finally(() => {
         setStatus('default')
       })
   }, [endpoint, id, updateRoom])
 
-  const handleTogglePower = (on: boolean) => {
+  function setPower(on: boolean) {
     setStatus('syncing')
-    console.log('status set to syncing...')
     setSyncStamp(`syncing...`)
-    fetch(`${endpoint}/power`, {method: 'POST'})
+    const oldOn = thermostat.on
+    updateRoom(id, { thermostat : { ...thermostat, on: on } })
+    fetch(`${endpoint}/power/${thermostat.temperature}`, {method: 'POST'})
       .then(res => res.json())
       .then(({error}) => {
         if ( error ) {
           setSyncStamp('Response error')
+          updateRoom(id, { thermostat : { ...thermostat, on: oldOn } })
           return console.error(error)
         }
-        updateRoom(id, { thermostat : { ...thermostat, on: on } })
         setSyncStamp(new Date().toLocaleString())
       })
       .catch(err => {
         setSyncStamp('Request error')
+        updateRoom(id, { thermostat : { ...thermostat, on: oldOn } })
+        console.error(err)
+      })
+      .finally(() => {
+        setStatus('default')
+      })
+  }
+
+  function setTemperature(temperature: number) {
+    if ( thermostat.temperature === temperature ) 
+        return
+    setStatus('syncing')
+    setSyncStamp(`syncing...`)
+    const oldTemperature = thermostat.temperature
+    const oldOn = thermostat.on
+    updateRoom(id, { 
+      thermostat : { 
+        ...thermostat,
+        temperature 
+      }
+    })
+    fetch(`${endpoint}/temp/${temperature}`, {method: 'POST'})
+      .then(res => res.json())
+      .then(({error}) => {
+        if ( error ) {
+          setSyncStamp('Response error')
+          updateRoom(id, { 
+            thermostat : { 
+              ...thermostat,
+              on: oldOn,
+              temperature: oldTemperature
+            }
+          })
+          return console.error(error)
+        }
+        setSyncStamp(new Date().toLocaleString())
+      })
+      .catch(err => {
+        setSyncStamp('Request error')
+        updateRoom(id, { 
+            thermostat : { 
+              ...thermostat,
+              on: oldOn,
+              temperature: oldTemperature
+            }
+          })
         console.error(err)
       })
       .finally(() => {
@@ -164,12 +198,11 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           active={isActive} 
           thermostat={thermostat} 
           className="absolute inset-0" 
-          onTogglePower={handleTogglePower}
-          onUpdate={ thermostat => updateRoom(id, { thermostat }) }
+          onSetTemperature={setTemperature}
           />
       </div>
 
-      <div className={`absolute bottom-4 left-6 right-6 flex items-end gap-2 transition-all`}>
+      <div className={`absolute bottom-2 left-4 right-4 h-16 flex items-center gap-2 transition-all`}>
         <div className="flex items-end">
           <span className="relative font-black leading-[0.7] text-[55px]">
             {temperature}&deg; 
@@ -181,11 +214,30 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
             <span>{humidity}%</span>
           </span>
         </div>
-        <div className="flex flex-col gap-1 ml-auto text-right">
+        <button className={`
+            relative flex gap-14 items-center justify-center
+            ml-auto w-40 h-14 
+            bg-black/10
+            rounded-lg
+            ${ isActive ? 'opacity-100 transition-all duration-200 delay-500' : 'opacity-0 pointer-events-none translate-x-2' }
+          `} 
+          onTouchEnd={() => setPower(!thermostat.on)}
+          >
+          <strong className={`relative z-[1] transition-all ${ thermostat.on ? 'opacity-50' : 'text-white opacity-100' }`}>Off</strong>
+          <strong className={`relative z-[1] transition-all ${ thermostat.on ? 'text-white opacity-100' : 'opacity-50' }`}>On</strong>
+          <span className={`
+            absolute bottom-[2px] left-[2px] 
+            bg-black rounded-lg 
+            w-[calc(50%-4px)] h-[calc(100%-4px)]
+            transition-transform
+            ${ thermostat.on ? `translate-x-[calc(100%+4px)]`: 'translate-x-0' }
+            `}></span>
+        </button>
+        {/* <div className="flex flex-col gap-1 ml-auto text-right">
           <span className="text-xs leading-none"><strong className="font-black">cpu:</strong> {cpu_temp}&deg;</span>
           <span className="text-xs leading-none"><strong className="font-black">mem:</strong> {memory_used}%</span>
           <span className="text-xs leading-none">{syncStamp}</span>
-        </div>
+        </div> */}
       </div>
 
     </div>

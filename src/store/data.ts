@@ -5,7 +5,7 @@ export const rooms: RoomInterface[] = [
   {
     id: 1,
     name: "Living Room",
-    endpoint: APP_URL,
+    endpoint: `${APP_URL}/living-room`,
     temperature: 0,
     humidity: 0,
     connected: true,

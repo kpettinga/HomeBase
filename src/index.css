@@ -17,5 +17,11 @@ html, body {
 }
 
 .button {
-  @apply px-4 py-2 font-bold border border-black rounded-xl active:scale-[98%] duration-150 transition-all;
+  @apply px-4 py-2 font-bold rounded-xl active:scale-[98%] duration-150 transition-all;
+}
+.button-outline {
+  @apply button shadow-[0_0_0_1px_black];
+}
+.button-solid {
+  @apply button bg-black text-white;
 }
