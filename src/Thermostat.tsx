@@ -81,7 +81,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
         `}
         >
         <span className="relative inline-block">{ thermostat.temperature }<span className="absolute left-full top-0">&deg;</span></span>
-        <span>{ thermostat.on ? ['Auto','Lo','Med','Hi'][thermostat.speed] : "Off" }</span>
+        <span>{ thermostat.on ? 'Auto' : "Off" }</span>
       </div>
 
       <div 
@@ -95,7 +95,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
           className={`
             transition-all 
             ${active ? 'w-20 h-20' : 'w-12 h-12'} 
-            ${thermostat.on ? thermostat.speed < 2 ? 'animate-spin-slow' : (thermostat.speed === 2 ? 'animate-spin' : 'animate-spin-fast') : ''}
+            ${thermostat.on ? 'animate-spin-slow' : ''}
           `} 
           viewBox="0 0 48 48" 
           fill="none" 
@@ -108,21 +108,6 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
         </svg>
         {/* <strong className="absolute top-1/2 left-full -translate-y-1/2">{thermostat.temperature}</strong> */}
       </div>
-
-      {/* <div 
-        data-elem="SPEED"
-        className={`
-          absolute z-10 top-1/2 left-6 translate-y-1/2
-          font-black text-sm
-          flex flex-col items-start gap-2
-          transition-all
-          ${ active ? 'opacity-100 delay-500' : 'opacity-0 pointer-events-none -translate-x-2' }
-        `}>
-          <button className={`py-1 ${thermostat.speed === 3 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 3 })}>Hi</button>
-          <button className={`py-1 ${thermostat.speed === 2 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 2 })}>Med</button>
-          <button className={`py-1 ${thermostat.speed === 1 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 1 })}>Lo</button>
-          <button className={`py-1 ${thermostat.speed === 0 ? 'opacity-100' : 'opacity-30'}`} onTouchEnd={() => onUpdate({ ...thermostat, speed: 0 })}>Auto</button>
-      </div> */}
           
       <svg 
         data-elem="DIAL"

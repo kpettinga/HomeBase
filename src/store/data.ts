@@ -14,7 +14,6 @@ export const rooms: RoomInterface[] = [
     thermostat: {
       on: false,
       temperature: 26,
-      speed: 1,
     }
   },
   // {
@@ -27,7 +26,6 @@ export const rooms: RoomInterface[] = [
   //   thermostat: {
   //     on: true,
   //     temperature: 24,
-  //     speed: 3,
   //   }
   // },
   // {
@@ -40,7 +38,6 @@ export const rooms: RoomInterface[] = [
   //   thermostat: {
   //     on: true,
   //     temperature: 24,
-  //     speed: 1,
   //   }
   // },
   // {
@@ -53,7 +50,6 @@ export const rooms: RoomInterface[] = [
   //   thermostat: {
   //     on: false,
   //     temperature: 24,
-  //     speed: 2,
   //   }
   // },
 ]

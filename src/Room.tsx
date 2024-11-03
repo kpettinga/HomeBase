@@ -17,7 +17,6 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
   const [status, setStatus] = useState('default')
   const [timeoutId, setTimeoutId] = useState(0)
-  const [touchStartTime, setTouchStartTime] = useState(0)
   const [, setSyncStamp] = useState('')
   const touchMax = 750
 
@@ -40,7 +39,6 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   function handleTouchStart() {
     if ( isActive ) return
     setStatus('touching')
-    setTouchStartTime(new Date().getTime())
     setTimeoutId(
       setTimeout(() => {
         setActiveRoom(id)
@@ -52,11 +50,6 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   function handleTouchEnd() {
     setStatus('default')
     clearTimeout(timeoutId)
-    const touchDuration = new Date().getTime() - touchStartTime
-    if ( touchDuration < touchMax ) {
-      setPower(!thermostat.on)
-    }
-    setTouchStartTime(0)
   }
 
   const syncStatus = useCallback(() => {
@@ -64,14 +57,21 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     setSyncStamp(`syncing...`)
     fetch(`${endpoint}/status?t=${new Date().getTime()}`)
       .then(res => res.json())
-      .then(({error, cpu_temp, memory_used, sensor_data: { error: sensor_error, temperature, humidity } }) => {
+      .then(status => {
+        const {
+          error, 
+          cpu_temp, 
+          memory_used, 
+          sensor_data: { error: sensor_error, temperature, humidity }, 
+          thermostat 
+        } = status
         if ( error || sensor_error ) {
           console.warn(error || sensor_error)
           console.warn("There was an error getting the room status. Trying again...")
           // setTimeout(() => syncStatus(), 2000)
           return
         }
-        updateRoom(id, { temperature, humidity, cpu_temp, memory_used })
+        updateRoom(id, { temperature, humidity, cpu_temp, memory_used, thermostat })
         setSyncStamp(new Date().toLocaleString())
       })
       .catch(err => {
@@ -188,9 +188,11 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           {name}
         </span>
         <span className={`
-          ml-auto w-3 h-3 rounded-full transition-all
-          ${status === 'syncing' ? 'shadow-[inset_0_0_0_3px] animate-ping' : 'shadow-[inset_0_0_0_6px]'}
-        `}></span>
+            ml-auto w-3 h-3 rounded-full transition-all
+            ${status === 'syncing' ? 'shadow-[inset_0_0_0_3px] animate-ping' : 'shadow-[inset_0_0_0_6px]'}
+          `}
+          onClick={() => syncStatus()}
+        ></span>
       </div>
 
       <div className={`absolute right-0 left-0 overflow-hidden transition-all border-t-2 border-black ${isActive ? 'top-12 bottom-20 border-b-2' : 'top-0 bottom-0'}`}>

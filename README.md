@@ -18,7 +18,6 @@ I live in a tropical climate and my home only has mini-split AC units (condenser
 - [x] Read current temperature and humidity
 - Air conditioning unit control
   - [ ] Set temperature
-  - [ ] Set fan speed
   - [ ] Toggle On/Off
 - [ ] Use websockets (instead of pinging an endpoint) for realtime monitoring of climate and AC unit status.
 - Bootstrap process for setting up new SBC device

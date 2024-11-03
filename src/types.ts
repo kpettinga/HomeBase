@@ -1,7 +1,6 @@
 export interface ThermostatInterface {
   on: boolean,
   temperature: number,
-  speed:number,
 }
 
 export interface RoomInterface {
