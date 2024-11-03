@@ -42,7 +42,9 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     setTimeoutId(
       setTimeout(() => {
         setActiveRoom(id)
-        navigator.vibrate(10)
+        if ( typeof window.navigator.vibrate === 'function' ) {
+          navigator.vibrate(10)
+        }
       }, touchMax)
     )
   }

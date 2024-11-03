@@ -60,7 +60,9 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
     
     const __minorRoundedTemp = Math.round(rotation / 3) * 3
     if (minorRoundedTemp !== __minorRoundedTemp) {
-      navigator.vibrate(5)
+      if ( typeof window.navigator.vibrate === 'function' ) {
+        navigator?.vibrate(5)
+      }
       setMinorRoundedTemp(__minorRoundedTemp)
     }
 
