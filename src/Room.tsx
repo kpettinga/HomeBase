@@ -3,6 +3,7 @@ import { useRoomStore } from "./store/store"
 import Thermostat from "./Thermostat"
 import {RoomInterface} from "./types"
 import { useVibrate } from "./hooks"
+import PowerToggle from "./components/PowerToggle"
 
 interface RoomProps {
   className?: string
@@ -211,6 +212,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
       </div>
 
       <div className={`absolute bottom-2 left-4 right-4 h-16 flex items-center gap-2 transition-all`}>
+        
         <div className="flex items-end">
           <span className="relative font-black leading-[0.7] text-[55px]">
             {temperature}&deg; 
@@ -222,30 +224,19 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
             <span>{humidity}%</span>
           </span>
         </div>
-        <button className={`
-            relative flex gap-14 items-center justify-center
-            ml-auto w-40 h-14 
-            bg-black/10
-            rounded-lg
-            ${ isActive ? 'opacity-100 transition-all duration-200 delay-500' : 'opacity-0 pointer-events-none translate-x-2' }
-          `} 
-          onTouchEnd={() => setPower(!thermostat.on)}
-          >
-          <strong className={`relative z-[1] transition-all ${ thermostat.on ? 'opacity-50' : 'text-white opacity-100' }`}>Off</strong>
-          <strong className={`relative z-[1] transition-all ${ thermostat.on ? 'text-white opacity-100' : 'opacity-50' }`}>On</strong>
-          <span className={`
-            absolute bottom-[2px] left-[2px] 
-            bg-black rounded-lg 
-            w-[calc(50%-4px)] h-[calc(100%-4px)]
-            transition-transform
-            ${ thermostat.on ? `translate-x-[calc(100%+4px)]`: 'translate-x-0' }
-            `}></span>
-        </button>
+
+        <PowerToggle
+          on={thermostat.on}
+          onTap={() => setPower(!thermostat.on)}
+          className="ml-auto"
+          />
+        
         {/* <div className="flex flex-col gap-1 ml-auto text-right">
           <span className="text-xs leading-none"><strong className="font-black">cpu:</strong> {cpu_temp}&deg;</span>
           <span className="text-xs leading-none"><strong className="font-black">mem:</strong> {memory_used}%</span>
           <span className="text-xs leading-none">{syncStamp}</span>
         </div> */}
+
       </div>
 
     </div>
