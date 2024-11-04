@@ -27,20 +27,24 @@ function updateAppColor() {
   const metaThemeColor = document.querySelector('meta[name="theme-color"]')
   // @ts-expect-error The meta tag should always exist
   if ( metaThemeColor ) metaThemeColor.content = appColor
+  return appColor
 }
 
 const App: React.FC = () => {
 
+  const setAppColor = useRoomStore(state => state.setAppColor)
   const rooms = useRoomStore( state => state.rooms as RoomInterface[] )
   const activeRoom = useRoomStore( state => state.activeRoom )
 
   useEffect(() => {    
-    updateAppColor()
+    const color = updateAppColor()
+    setAppColor(color)
     const interval = setInterval(() => {
       updateAppColor()
-    }, 1000 * 60)
+      setAppColor(color)
+    }, 1000 * 60 * 5)
     return () => clearInterval(interval)
-  }, [])
+  }, [setAppColor])
 
   return (
     <div className={`flex flex-col relative w-dvh h-dvh`}>

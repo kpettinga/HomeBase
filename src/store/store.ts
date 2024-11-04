@@ -3,6 +3,8 @@ import { rooms } from "./data"
 import { RoomInterface } from "../types"
 
 export interface StateInterface {
+  appColor: string
+  setAppColor: (color: string) => void
   activeRoom: RoomInterface | null
   setActiveRoom: (roomId: string|number|null) => void
   rooms: RoomInterface[]
@@ -11,6 +13,8 @@ export interface StateInterface {
 
 export const useRoomStore = create<StateInterface>()(
   (set) => ({
+    appColor: '#000000',
+    setAppColor: (color: string) => set({ appColor: color }),
     activeRoom: null,
     setActiveRoom: (roomId: string|number|null) => set({ activeRoom: roomId ? rooms.find((r: RoomInterface) => r.id === roomId) : null }),
     rooms,

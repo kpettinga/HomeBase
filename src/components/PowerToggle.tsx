@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { useRoomStore } from "../store/store"
 
 interface PowerToggleProps {
   className?: string
@@ -10,6 +11,8 @@ const PowerToggle: React.FC<PowerToggleProps> = ({
   on = false, 
   onTap = () => {} 
 }) => {
+
+  const appColor = useRoomStore(state => state.appColor)
 
   const [touchStartTime, setTouchStartTime] = useState<number>(0)
   const tapMax = 300
@@ -45,9 +48,13 @@ const PowerToggle: React.FC<PowerToggleProps> = ({
         text-[0.75em]
         rounded-full aspect-square w-[3em] h-auto
         transition-transform
-        ${ on ? 'bg-white text-black' : 'bg-black text-white' }
+        ${ on ? 'text-black' : 'text-white' }
         ${ on ? 'translate-x-full' : '' }
-        `}>
+        `}
+        style={{ 
+          backgroundColor: on ? appColor : 'black',
+          color: on ? 'black' : appColor
+        }}>
           <strong className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-all`}>{ on ? 'On' : 'Off' }</strong>
         </span>
     </button>
