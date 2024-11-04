@@ -192,12 +192,16 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           </button>
           {name}
         </span>
-        <span className={`
-            ml-auto w-3 h-3 rounded-full transition-all
-            ${status === 'syncing' ? 'shadow-[inset_0_0_0_3px] animate-ping' : 'shadow-[inset_0_0_0_6px]'}
-          `}
-          onClick={() => syncStatus()}
-        ></span>
+        <span className="ml-auto p-3 translate-x-3"
+          onTouchStart={(e) => { e.stopPropagation() } }
+          onTouchEnd={(e) => { e.stopPropagation(); syncStatus() }}
+          >
+          <span className={`
+              block w-3 h-3 rounded-full transition-all
+              ${status === 'syncing' ? 'shadow-[inset_0_0_0_3px] animate-ping' : 'shadow-[inset_0_0_0_6px]'}
+            `}
+          ></span>
+        </span>
       </div>
 
       <div className={`absolute right-0 left-0 overflow-hidden transition-all border-t-2 border-black ${isActive ? 'top-12 bottom-20 border-b-2' : 'top-0 bottom-0'}`}>
