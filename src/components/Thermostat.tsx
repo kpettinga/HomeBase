@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
-import { ThermostatInterface } from "./types"
-import { MAJOR_THERMOSTAT_STEP_DEG, MIN_TEMP } from "./constants"
+import { ThermostatInterface } from "~/types"
+import { MAJOR_THERMOSTAT_STEP_DEG, MIN_TEMP } from "~/constants"
 
 function degreesToTemp(degree: number) {
   return degree / MAJOR_THERMOSTAT_STEP_DEG + MIN_TEMP

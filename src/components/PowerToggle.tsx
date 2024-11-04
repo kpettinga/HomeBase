@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { useRoomStore } from "../store/store"
+import { useRoomStore } from "~/store/store"
 
 interface PowerToggleProps {
   className?: string

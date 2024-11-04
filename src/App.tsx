@@ -1,9 +1,9 @@
 import { useEffect } from "react"
-import DateTime from "./DateTime"
-import Room from "./Room"
-import { useRoomStore } from "./store/store"
-import { RoomInterface } from "./types"
-import Weather from "./Weather"
+import { useRoomStore } from "~/store/store"
+import { RoomInterface } from "~/types"
+import DateTime from "~/components/DateTime"
+import Room from "~/components/Room"
+import Weather from "~/components/Weather"
 
 /**
  * @param {Date} [date] - Date to calculate the color for, or today if not given
