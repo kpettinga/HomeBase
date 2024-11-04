@@ -33,6 +33,7 @@ function updateAppColor() {
 const App: React.FC = () => {
 
   const setAppColor = useRoomStore(state => state.setAppColor)
+  const appColor = useRoomStore(state => state.appColor)
   const rooms = useRoomStore( state => state.rooms as RoomInterface[] )
   const activeRoom = useRoomStore( state => state.activeRoom )
 
@@ -66,7 +67,7 @@ const App: React.FC = () => {
               />
         ) ) }
       </div>
-      <footer className="bg-black text-white flex items-center px-6 py-4">
+      <footer className="bg-black flex items-center px-6 py-4 transition-colors" style={{ color: appColor }}>
         <Weather />
         <DateTime className="ml-auto text-xs font-black" />
       </footer>
