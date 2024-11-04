@@ -1,6 +1,6 @@
 import { create } from "zustand"
 import { rooms } from "./data"
-import { RoomInterface } from "~/types"
+import { RoomInterface } from "~/utils/types"
 
 export interface StateInterface {
   appColor: string

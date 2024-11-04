@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 import { useRoomStore } from "~/store/store"
 import Thermostat from "~/components/Thermostat"
-import {RoomInterface} from "~/types"
+import {RoomInterface} from "~/utils/types"
 import PowerToggle from "~/components/PowerToggle"
 
 interface RoomProps {

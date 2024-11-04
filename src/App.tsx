@@ -1,6 +1,6 @@
 import { useEffect } from "react"
 import { useRoomStore } from "~/store/store"
-import { RoomInterface } from "~/types"
+import { RoomInterface } from "~/utils/types"
 import DateTime from "~/components/DateTime"
 import Room from "~/components/Room"
 import Weather from "~/components/Weather"

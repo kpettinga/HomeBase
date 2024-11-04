@@ -1,5 +1,5 @@
-import { APP_URL } from "~/constants";
-import { RoomInterface } from "~/types";
+import { APP_URL } from "~/utils/constants";
+import { RoomInterface } from "~/utils/types";
 
 export const rooms: RoomInterface[] = [
   {
