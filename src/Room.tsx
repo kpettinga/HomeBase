@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from "react"
 import { useRoomStore } from "./store/store"
 import Thermostat from "./Thermostat"
 import {RoomInterface} from "./types"
-import { useVibrate } from "./hooks"
 import PowerToggle from "./components/PowerToggle"
 
 interface RoomProps {
@@ -15,8 +14,6 @@ interface RoomProps {
 
 const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
   
-  const vibrate = useVibrate()
-
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
   
@@ -55,7 +52,9 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
     const touchDuration = new Date().getTime() - touchStartTime
     if ( touchDuration < tapMax ) {
       setActiveRoom(id)
-      vibrate(10)
+      if ( typeof window.navigator.vibrate === 'function' ) {
+        window.navigator.vibrate(10)
+      }
     }
   }
 

@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react"
 import { ThermostatInterface } from "./types"
 import { MAJOR_THERMOSTAT_STEP_DEG, MIN_TEMP } from "./constants"
-import { useVibrate } from "./hooks"
 
 function degreesToTemp(degree: number) {
   return degree / MAJOR_THERMOSTAT_STEP_DEG + MIN_TEMP
@@ -17,8 +16,6 @@ interface ThermostatProps {
   onSetTemperature: (temperature: number) => void
 }
 const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, onSetTemperature }) => {
-
-  const vibrate = useVibrate()
 
   const dialTrackRef = useRef<SVGGElement>(null)
 
@@ -63,11 +60,13 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
     
     const __minorRoundedTemp = Math.round(rotation / 3) * 3
     if (minorRoundedTemp !== __minorRoundedTemp) {
-      vibrate(10)
+      if ( typeof window.navigator.vibrate === 'function' ) {
+        window.navigator.vibrate(10)
+      }
       setMinorRoundedTemp(__minorRoundedTemp)
     }
 
-  }, [rotation, roundedDegree, minorRoundedTemp, vibrate])
+  }, [rotation, roundedDegree, minorRoundedTemp])
 
   return (
     <div className={className}>
