@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from "react"
 import { useRoomStore } from "./store/store"
 import Thermostat from "./Thermostat"
 import {RoomInterface} from "./types"
+import { useVibrate } from "./hooks"
 
 interface RoomProps {
   className?: string
@@ -13,12 +14,15 @@ interface RoomProps {
 
 const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
   
+  const vibrate = useVibrate()
+
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
+  
   const [status, setStatus] = useState('default')
-  const [timeoutId, setTimeoutId] = useState(0)
   const [, setSyncStamp] = useState('')
-  const touchMax = 750
+  const [touchStartTime, setTouchStartTime] = useState(0)
+  const tapMax = 300
 
   const style: React.CSSProperties = {
     position: 'absolute',
@@ -37,21 +41,21 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   }
   
   function handleTouchStart() {
-    if ( isActive ) return
-    setStatus('touching')
-    setTimeoutId(
-      setTimeout(() => {
-        setActiveRoom(id)
-        if ( typeof window.navigator.vibrate === 'function' ) {
-          navigator.vibrate(10)
-        }
-      }, touchMax)
-    )
+    if ( isActive ) {
+        return
+    }
+    setTouchStartTime(new Date().getTime())
   }
   
   function handleTouchEnd() {
-    setStatus('default')
-    clearTimeout(timeoutId)
+    if ( isActive ) {
+      return
+    }
+    const touchDuration = new Date().getTime() - touchStartTime
+    if ( touchDuration < tapMax ) {
+      setActiveRoom(id)
+      vibrate(10)
+    }
   }
 
   const syncStatus = useCallback(() => {
@@ -68,8 +72,8 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
           thermostat 
         } = status
         if ( error || sensor_error ) {
-          console.warn(error || sensor_error)
-          console.warn("There was an error getting the room status. Trying again...")
+          console.error(error || sensor_error)
+          console.log("There was an error getting the room status. Trying again...")
           // setTimeout(() => syncStatus(), 2000)
           return
         }
@@ -163,7 +167,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
 
   return (
     <div 
-      className={`relative transition-all duration-500 ${status === 'touching' ? 'bg-black/5' : ''} ${className || ''}`} 
+      className={`relative transition-all duration-500 ${className || ''}`} 
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       style={style}
