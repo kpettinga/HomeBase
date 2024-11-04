@@ -74,8 +74,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
         if ( error || sensor_error ) {
           console.error(error || sensor_error)
           console.log("There was an error getting the room status. Trying again...")
-          // setTimeout(() => syncStatus(), 2000)
-          return
+          setTimeout(() => syncStatus(), 1000)
         }
         updateRoom(id, { temperature, humidity, cpu_temp, memory_used, thermostat })
         setSyncStamp(new Date().toLocaleString())
@@ -212,15 +211,15 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
 
       <div className={`absolute bottom-2 left-4 right-4 h-16 flex items-center gap-2 transition-all`}>
         
-        <div className="flex items-end">
+        <div className={`flex items-end ${ !temperature || !humidity ? 'opacity-30' : ''}`}>
           <span className="relative font-black leading-[0.7] text-[55px]">
-            {temperature}&deg; 
+            { temperature || '0' }&deg; 
           </span>
           <span className={`relative flex items-end gap-1 text-base font-black leading-[0.7]`}>
             <svg width={ size === "large" ? "13" : "9" } height={ size === "large" ? "19" : "13" } viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 12.2704C0 15.9873 2.86827 19 6.40309 19C9.93909 19 13 15.9873 13 12.2704C13 8.55475 6.40309 0 6.40309 0C6.40309 0 0 8.55475 0 12.2704Z" fill="black"/>
             </svg>
-            <span>{humidity}%</span>
+            <span>{ humidity || '0' }%</span>
           </span>
         </div>
 
