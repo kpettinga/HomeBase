@@ -16,7 +16,7 @@ const DateTime: React.FC<DateTimeProps> = ({ className }) => {
   }, [])
 
   const getWeekday = (date: Date) => {
-    return date.toLocaleString('en-US', { weekday: 'short' })
+    return date.toLocaleString('en-US', { weekday: 'long' })
   }
 
   const getMonth = (date: Date) => {
@@ -36,11 +36,10 @@ const DateTime: React.FC<DateTimeProps> = ({ className }) => {
   }
   
   return (
-    <span className={`flex gap-2 ${className}`}>
+    <span className={`block leading-[1.1] font-extralight ${className}`}>
       <span>{ getWeekday(currentTime) }</span>
-      <span>{ getMonth(currentTime) }</span>
-      <span>{ getDay(currentTime) }</span>
-      <span>{ getHour(currentTime) }<span className="transition-all duration-500" style={{ opacity: currentTime.getSeconds() % 2 === 0 ? 1 : 0.5 }}>:</span>{ getMinute(currentTime) }</span>
+      <br/><span>{ getMonth(currentTime) }</span>{' '}<span>{ getDay(currentTime) }</span>
+      <br/><span>{ getHour(currentTime) }<span className="transition-all duration-500" style={{ opacity: currentTime.getSeconds() % 2 === 0 ? 1 : 0.5 }}>:</span>{ getMinute(currentTime) }</span>
     </span>
   )
 }

@@ -6,13 +6,12 @@ import PowerToggle from "~/components/PowerToggle"
 
 interface RoomProps {
   className?: string
-  size: 'small' | 'large'
-  isActive?: boolean
+  active?: boolean
   row: number
   column: number
 }
 
-const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
+const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
   
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
@@ -23,30 +22,24 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
   const tapMax = 300
 
   const style: React.CSSProperties = {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
     height: 'auto', //'50%',
-    aspectRatio: '1 / 1',
     transform: `translate3d(${100 * column}%, ${100 * row}%, 0)`,  
   }
   
-  if ( isActive ) {
-    style.width = '100%'
+  if ( active ) {
     style.height = '100%'
     style.transform = `translate3d(${0}%, ${0}%, 0)` 
   }
   
   function handleTouchStart() {
-    if ( isActive ) {
+    if ( active ) {
         return
     }
     setTouchStartTime(new Date().getTime())
   }
   
   function handleTouchEnd() {
-    if ( isActive ) {
+    if ( active ) {
       return
     }
     const touchDuration = new Date().getTime() - touchStartTime
@@ -166,61 +159,57 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
 
   return (
     <div 
-      className={`relative transition-all duration-500 ${className || ''}`} 
+      className={`
+        relative top-0 left-0
+        width-full h-auto rounded-2xl 
+        transition-all 
+        duration-500 
+        overflow-hidden
+        ${ active ? 'aspect-auto' : 'aspect-square bg-black/5' }
+        ${className || ''}
+      `} 
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       style={style}
       >
       
-      <div className={`absolute left-6 right-6 z-10 flex items-center transition-all ${ isActive ? 'top-0' : 'top-4' }`}>
-        <span className={`transition-all flex items-center font-black leading-none tracking-tight whitespace-nowrap ${ isActive ? 'text-3xl' : 'text-xl' }`}>
-          <button 
-            className={`
-              w-12 h-auto
-              -ml-6 mr-2
-              py-3 px-2
-              bg-black text-white
-              flex justify-end 
-              transition-all
-              ${ isActive ? 'opacity-100 delay-500' : '!w-0 opacity-0 -translate-x-2' }
-            `}
-            onClick={() => setActiveRoom(null)}
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-          </button>
+      <div className={`absolute top-4 left-4 right-4 z-10 flex items-center transition-all`}>
+        <span className={`transition-all flex items-center font-bold leading-none tracking-tight whitespace-nowrap ${ active ? 'text-3xl' : 'text-lg' }`}>
           {name}
         </span>
-        <span className="ml-auto p-3 translate-x-3"
+        <span className="ml-auto"
           onTouchStart={(e) => { e.stopPropagation() } }
           onTouchEnd={(e) => { e.stopPropagation(); syncStatus() }}
           >
-          <span className={`
-              block w-3 h-3 rounded-full transition-all
-              ${status === 'syncing' ? 'shadow-[inset_0_0_0_3px] animate-ping' : 'shadow-[inset_0_0_0_6px]'}
-            `}
-          ></span>
+          <svg className={`block size-6 ${ status === 'syncing' ? 'animate-spin' : '' }`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+          </svg>
         </span>
       </div>
 
-      <div className={`absolute right-0 left-0 overflow-hidden transition-all border-t-2 border-black ${isActive ? 'top-12 bottom-20 border-b-2' : 'top-0 bottom-0'}`}>
+      <div className={`
+        absolute right-0 left-0 
+        overflow-hidden 
+        transition-all 
+        border-y-2 
+        ${ active ? 'top-16 bottom-28 border-black' : 'top-0 bottom-0 border-transparent' }
+        `}>
         <Thermostat 
-          active={isActive} 
+          active={active} 
           thermostat={thermostat} 
           className="absolute inset-0" 
           onSetTemperature={setTemperature}
           />
       </div>
 
-      <div className={`absolute bottom-2 left-4 right-4 h-16 flex items-center gap-2 transition-all`}>
+      <div className={`absolute bottom-4 left-4 right-4 flex items-end gap-2 transition-all`}>
         
-        <div className={`flex items-end ${ !temperature || !humidity ? 'opacity-30' : ''}`}>
-          <span className="relative font-black leading-[0.7] text-[55px]">
+        <div className={`flex flex-col gap-3 ${ !temperature || !humidity ? 'opacity-30' : ''}`}>
+          <span className="relative font-extralight leading-[0.7] text-7xl order-1">
             { temperature || '0' }&deg; 
           </span>
-          <span className={`relative flex items-end gap-1 text-base font-black leading-[0.7]`}>
-            <svg width={ size === "large" ? "13" : "9" } height={ size === "large" ? "19" : "13" } viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <span className={`relative flex items-end text-xs font-bold leading-[0.7]`}>
+            <svg className="size-[0.6rem]" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M0 12.2704C0 15.9873 2.86827 19 6.40309 19C9.93909 19 13 15.9873 13 12.2704C13 8.55475 6.40309 0 6.40309 0C6.40309 0 0 8.55475 0 12.2704Z" fill="black"/>
             </svg>
             <span>{ humidity || '0' }%</span>
@@ -230,12 +219,17 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, size, isActive, 
         <PowerToggle
           on={thermostat.on}
           onTap={() => setPower(!thermostat.on)}
-          className="ml-auto"
+          className={`
+            ml-auto
+            transition-all
+            duration-500
+            ${ active ? 'opacity-100' : 'opacity-0 pointer-events-none' }
+          `}
           />
         
         {/* <div className="flex flex-col gap-1 ml-auto text-right">
-          <span className="text-xs leading-none"><strong className="font-black">cpu:</strong> {cpu_temp}&deg;</span>
-          <span className="text-xs leading-none"><strong className="font-black">mem:</strong> {memory_used}%</span>
+          <span className="text-xs leading-none"><strong className="font-bold">cpu:</strong> {cpu_temp}&deg;</span>
+          <span className="text-xs leading-none"><strong className="font-bold">mem:</strong> {memory_used}%</span>
           <span className="text-xs leading-none">{syncStamp}</span>
         </div> */}
 

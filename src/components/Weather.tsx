@@ -35,7 +35,7 @@ const Weather: React.FC<WeatherProps> = ({ className }) => {
 
   return (
     <div className={`
-      flex items-center gap-2 text-xs font-black transition-all
+      flex items-center gap-2 text-xs font-bold transition-all
       ${status === 'loading' ? 'opacity-0 -translate-x-1/2' : 'opacity-100'} 
       ${className}
       `}>

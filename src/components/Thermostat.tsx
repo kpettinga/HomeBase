@@ -77,7 +77,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
           absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 
           h-24
           flex flex-col justify-between items-center
-          text-center font-black text-sm
+          text-center font-bold text-sm
           transition-all
           ${ active ? 'opacity-0 pointer-events-none' : ( thermostat.on ? 'opacity-100' : 'opacity-30' ) }
         `}
@@ -132,8 +132,8 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
           className="transition-all duration-500" 
           cx="500" cy="500" r="430" 
           fill="none" stroke="black" 
-          strokeOpacity={ active ? '0.2' : '0'} 
-          strokeWidth="140" 
+          strokeOpacity={0.2} 
+          strokeWidth={140} 
           strokeDasharray="1 21.515"
           />
         <path d={[
@@ -161,7 +161,7 @@ const Thermostat: React.FC<ThermostatProps> = ({ className, active, thermostat, 
             { [11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34].map( (temp, t) => (
               <text key={t}
                 x={0} y={0}
-                className={`font-black transition-all ${ !moving && thermostat.temperature === temp ? 'text-3xl' : 'text-base' }`}
+                className={`font-bold transition-all ${ !moving && thermostat.temperature === temp ? 'text-3xl' : 'text-base' }`}
                 textAnchor="end"
                 dominantBaseline="middle"
                 style={{ transformOrigin: '-345px 0', transform: `translateX(345px) rotate(${t * -15}deg)` }}
