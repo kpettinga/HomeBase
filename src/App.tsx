@@ -71,7 +71,7 @@ const App: React.FC = () => {
           `} />
         {/* <Weather /> */}
       </nav>
-      <div className={`flex flex-col justify-end gap-2 relative grow px-6 pt-6`}>
+      <div className={`flex flex-col justify-end gap-2 relative grow p-6`}>
         { rooms.map((room: RoomInterface, r: number) => (
           <Room key={room.name} 
             row={Math.floor(r/2)} 
