@@ -17,7 +17,11 @@ html, body {
 }
 
 .button {
-  @apply flex items-center justify-center gap-4 px-4 py-6 font-bold rounded-2xl active:scale-[98%] duration-150 transition-all;
+  @apply flex items-center justify-center gap-2 
+  px-4 py-6 rounded-2xl 
+  font-bold tracking-tight
+  active:scale-[98%] 
+  duration-150 transition-all;
 }
 .button-outline {
   @apply button shadow-[inset_0_0_0_2px_black];
