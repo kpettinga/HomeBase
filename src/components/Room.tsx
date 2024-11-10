@@ -11,13 +11,13 @@ interface RoomProps {
   column: number
 }
 
-const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
+const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, column, id, name, temperature, humidity, thermostat, cpu_temp, memory_used, endpoint }) => {
   
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
   
   const [status, setStatus] = useState('default')
-  const [, setSyncStamp] = useState('')
+  const [syncStamp, setSyncStamp] = useState('')
   const [touchStartTime, setTouchStartTime] = useState(0)
   const tapMax = 300
 
@@ -70,7 +70,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
           setTimeout(() => syncStatus(), 1000)
         }
         updateRoom(id, { temperature, humidity, cpu_temp, memory_used, thermostat })
-        setSyncStamp(new Date().toLocaleString())
+        setSyncStamp(new Date().toLocaleTimeString())
       })
       .catch(err => {
         console.error(err)
@@ -94,7 +94,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
           updateRoom(id, { thermostat : { ...thermostat, on: oldOn } })
           return console.error(error)
         }
-        setSyncStamp(new Date().toLocaleString())
+        setSyncStamp(new Date().toLocaleTimeString())
       })
       .catch(err => {
         setSyncStamp('Request error')
@@ -192,7 +192,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
         overflow-hidden 
         transition-all 
         border-y-2 
-        ${ active ? 'top-16 bottom-28 border-black' : 'top-0 bottom-0 border-transparent' }
+        ${ active ? 'top-16 bottom-44 border-black' : 'top-0 bottom-0 border-transparent' }
         `}>
         <Thermostat 
           active={active} 
@@ -202,36 +202,53 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
           />
       </div>
 
-      <div className={`absolute bottom-4 left-4 right-4 flex items-end gap-2 transition-all`}>
+      <div className={`absolute bottom-4 left-4 right-4 flex flex-col`}>
         
-        <div className={`flex flex-col gap-3 ${ !temperature || !humidity ? 'opacity-30' : ''}`}>
-          <span className="relative font-extralight leading-[0.7] text-7xl order-1">
-            { temperature || '0' }&deg; 
-          </span>
-          <span className={`relative flex items-end text-xs font-bold leading-[0.7]`}>
-            <svg className="size-[0.6rem]" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M0 12.2704C0 15.9873 2.86827 19 6.40309 19C9.93909 19 13 15.9873 13 12.2704C13 8.55475 6.40309 0 6.40309 0C6.40309 0 0 8.55475 0 12.2704Z" fill="black"/>
-            </svg>
-            <span>{ humidity || '0' }%</span>
-          </span>
+        <div className="flex items-end">
+          <div className={`flex ${ !temperature || !humidity ? 'opacity-30' : ''}`}>
+            <span className="relative font-extralight leading-[0.7] text-7xl">
+              { temperature || '0' }&deg; 
+            </span>
+            <span className={`relative flex items-end text-xs font-bold leading-[0.7]`}>
+              <svg className="size-[0.6rem]" viewBox="0 0 13 19" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M0 12.2704C0 15.9873 2.86827 19 6.40309 19C9.93909 19 13 15.9873 13 12.2704C13 8.55475 6.40309 0 6.40309 0C6.40309 0 0 8.55475 0 12.2704Z" fill="black"/>
+              </svg>
+              <span>{ humidity || '0' }%</span>
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 ml-auto text-right">
+            <span className="text-xs leading-none"><strong className="font-bold">cpu:</strong> {cpu_temp}&deg;</span>
+            <span className="text-xs leading-none"><strong className="font-bold">mem:</strong> {memory_used}%</span>
+            <span className="text-xs leading-none">
+              <svg className={`inline size-3 mr-1`} xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" />
+              </svg>
+              {syncStamp}
+            </span>
+          </div>          
         </div>
 
-        <PowerToggle
-          on={thermostat.on}
-          onTap={() => setPower(!thermostat.on)}
-          className={`
-            ml-auto
-            transition-all
-            duration-500
-            ${ active ? 'opacity-100' : 'opacity-0 pointer-events-none' }
-          `}
-          />
-        
-        {/* <div className="flex flex-col gap-1 ml-auto text-right">
-          <span className="text-xs leading-none"><strong className="font-bold">cpu:</strong> {cpu_temp}&deg;</span>
-          <span className="text-xs leading-none"><strong className="font-bold">mem:</strong> {memory_used}%</span>
-          <span className="text-xs leading-none">{syncStamp}</span>
-        </div> */}
+        <div className={`
+          flex gap-4 transition-all duration-500
+          ${ active ? 'h-[72px] mt-4' : 'h-0 mt-0 opacity-0 pointer-events-none' }
+          `}>
+          <button 
+            className={`button button-outline w-1/2 grow`}
+            onClick={() => setActiveRoom(null)}
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg> Back
+          </button>
+          <PowerToggle
+            on={thermostat.on}
+            onTap={() => setPower(!thermostat.on)}
+            className={`
+              w-1/2 grow transition-all duration-500
+              ${ active ? 'opacity-100' : 'opacity-0 pointer-events-none' }
+            `}
+            />
+          </div>
 
       </div>
 

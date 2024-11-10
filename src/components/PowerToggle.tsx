@@ -33,10 +33,8 @@ const PowerToggle: React.FC<PowerToggleProps> = ({
   return (
     <button className={`
         relative flex gap-14 items-center justify-center
-        text-[1rem]
-        w-[4.9em] h-[2.65em]
-        rounded-full
-        shadow-[0_0_0_2px_black]
+        px-4 py-6 font-bold rounded-2xl
+        shadow-[inset_0_0_0_2px_black]
         ${ on ? 'bg-black' : '' }
         ${className}
       `} 
@@ -44,9 +42,9 @@ const PowerToggle: React.FC<PowerToggleProps> = ({
       onTouchEnd={handleTouchEnd}
       >
       <span className={`
-        absolute top-[0.25em] left-[0.25em]
+        absolute top-[0.5em] bottom-[0.5em] left-[0.5em]
         text-[0.75em]
-        rounded-full aspect-square w-[3em] h-auto
+        rounded-xl aspect-square w-[calc(50%-0.5em)]
         transition-transform
         ${ on ? 'text-black' : 'text-white' }
         ${ on ? 'translate-x-full' : '' }
