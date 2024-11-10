@@ -3,7 +3,7 @@ import { useRoomStore } from "~/store/store"
 import { RoomInterface } from "~/utils/types"
 import DateTime from "~/components/DateTime"
 import Room from "~/components/Room"
-// import Weather from "~/components/Weather"
+import Weather from "~/components/Weather"
 
 /**
  * @param {Date} [date] - Date to calculate the color for, or today if not given
@@ -49,26 +49,21 @@ const App: React.FC = () => {
 
   return (
     <div className={`flex flex-col relative w-dvh h-dvh`}>
-      <nav className="flex flex-col px-6 text-4xl">
-        <div className={`
-            flex items-center
-            overflow-hidden 
-            transition-all
-            duration-500
-            ${ activeRoom ? 'h-0' : 'h-20' } 
-          `}>
+      <nav className={`
+          flex flex-col gap-4 px-6 text-4xl justify-center
+          transition-all duration-500
+          ${ activeRoom ? 'pointer-events-none opacity-0 h-0' : 'opacity-100 h-56' }
+        `}>
+        <div className={`flex items-center`}>
           <strong className="font-bold text-3xl tracking-tight leading-relaxed">Climate Control</strong>
           <svg className="ml-auto size-8" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 21v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21m0 0h4.5V3.545M12.75 21h7.5V10.75M2.25 21h1.5m18 0h-18M2.25 9l4.5-1.636M18.75 3l-1.5.545m0 6.205 3 1m1.5.5-1.5-.5M6.75 7.364V3h-3v18m3-13.636 10.5-3.819" />
           </svg>
         </div>
-        <DateTime className={`
-          overflow-hidden 
-          transition-all
-          duration-500
-          ${ activeRoom ? 'h-0' : 'h-36' } 
-          `} />
-        {/* <Weather /> */}
+        <div className={`flex items-start`}>
+          <DateTime />
+          <Weather className="ml-auto" />
+        </div>
       </nav>
       <div className={`flex flex-col justify-end gap-2 relative grow p-6`}>
         { rooms.map((room: RoomInterface, r: number) => (
