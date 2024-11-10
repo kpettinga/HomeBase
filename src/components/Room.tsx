@@ -11,13 +11,13 @@ interface RoomProps {
   column: number
 }
 
-const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, column, id, name, temperature, humidity, thermostat, cpu_temp, memory_used, endpoint }) => {
+const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, column, id, name, temperature, humidity, thermostat, endpoint }) => {
   
   const updateRoom = useRoomStore(state => state.updateRoom)
   const setActiveRoom = useRoomStore(state => state.setActiveRoom)
   
   const [status, setStatus] = useState('default')
-  const [syncStamp, setSyncStamp] = useState('')
+  const [, setSyncStamp] = useState('')
   const [touchStartTime, setTouchStartTime] = useState(0)
   const tapMax = 300
 
@@ -70,7 +70,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
           setTimeout(() => syncStatus(), 1000)
         }
         updateRoom(id, { temperature, humidity, cpu_temp, memory_used, thermostat })
-        setSyncStamp(new Date().toLocaleTimeString())
+        setSyncStamp(new Date().toLocaleString())
       })
       .catch(err => {
         console.error(err)
@@ -94,7 +94,7 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
           updateRoom(id, { thermostat : { ...thermostat, on: oldOn } })
           return console.error(error)
         }
-        setSyncStamp(new Date().toLocaleTimeString())
+        setSyncStamp(new Date().toLocaleString())
       })
       .catch(err => {
         setSyncStamp('Request error')
@@ -188,11 +188,11 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
       </div>
 
       <div className={`
-        absolute left-0 
-        w-full h-auto aspect-square
-        overflow-hidden rounded-2xl 
-        transition-all duration-500
-        ${ active ? 'top-16 bg-[rgba(0,0,0,0.03)] shadow-[inset_0_0_0.25em_0_#00000077]' : 'top-0' }
+        absolute right-0 left-0 
+        overflow-hidden 
+        transition-all 
+        border-y-2 
+        ${ active ? 'top-16 bottom-28 border-black' : 'top-0 bottom-0 border-transparent' }
         `}>
         <Thermostat 
           active={active} 
@@ -201,11 +201,11 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
           onSetTemperature={setTemperature}
           />
       </div>
-      
-      <div className={`absolute bottom-4 left-4 right-4 flex flex-col transition-all duration-500`}>
+
+      <div className={`absolute bottom-4 left-4 right-4 flex items-end gap-2 transition-all`}>
         
-        <div className={`flex items-end ${ !temperature || !humidity ? 'animate-pulse' : ''}`}>
-          <span className="relative font-extralight leading-[0.7] text-7xl">
+        <div className={`flex flex-col gap-3 ${ !temperature || !humidity ? 'opacity-30' : ''}`}>
+          <span className="relative font-extralight leading-[0.7] text-7xl order-1">
             { temperature || '0' }&deg; 
           </span>
           <span className={`relative flex items-end text-xs font-bold leading-[0.7]`}>
@@ -214,48 +214,24 @@ const Room: React.FC<RoomProps & RoomInterface> = ({ className, active, row, col
             </svg>
             <span>{ humidity || '0' }%</span>
           </span>
-          <div className="flex flex-col gap-1 ml-auto text-right">
-            <span className="text-xs leading-none"><strong className="font-bold">cpu:</strong> {cpu_temp}&deg;</span>
-            <span className="text-xs leading-none"><strong className="font-bold">mem:</strong> {memory_used}%</span>
-            <span className="text-xs leading-none"><strong className="font-bold">updated:</strong> {syncStamp || 'syncing'}</span>
-          </div>
         </div>
 
-        <div className={`
-          flex gap-4 transition-all duration-500
-          ${ active ? 'opacity-100 h-16 mt-4' : 'opacity-0 h-0 mt-0 pointer-events-none translate-y-full' }
-          `}>
-          <button className="button button-outline w-1/2 h-16">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12a7.5 7.5 0 0 0 15 0m-15 0a7.5 7.5 0 1 1 15 0m-15 0H3m16.5 0H21m-1.5 0H12m-8.457 3.077 1.41-.513m14.095-5.13 1.41-.513M5.106 17.785l1.15-.964m11.49-9.642 1.149-.964M7.501 19.795l.75-1.3m7.5-12.99.75-1.3m-6.063 16.658.26-1.477m2.605-14.772.26-1.477m0 17.726-.26-1.477M10.698 4.614l-.26-1.477M16.5 19.794l-.75-1.299M7.5 4.205 12 12m6.894 5.785-1.149-.964M6.256 7.178l-1.15-.964m15.352 8.864-1.41-.513M4.954 9.435l-1.41-.514M12.002 12l-3.75 6.495" />
-            </svg>
-            <span>Settings</span>
-          </button>
-          <PowerToggle
-            on={thermostat.on}
-            onTap={() => setPower(!thermostat.on)}
-            className={`
-              
-              transition-all duration-500
-              ${ active ? 'opacity-100' : 'opacity-0 pointer-events-none' }
-            `}
-            />
-        </div>
-
-        <div className={`
-          flex gap-4 transition-all duration-500
-          ${ active ? 'opacity-100 h-16' : 'opacity-0 h-0 pointer-events-none translate-y-full' }
-          `}>
-          <button 
-            className={`button button-outline w-full h-16 mt-4`}
-            onClick={() => setActiveRoom(null)}
-            >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-            </svg>
-            <span>Back</span>
-          </button>
-        </div>
+        <PowerToggle
+          on={thermostat.on}
+          onTap={() => setPower(!thermostat.on)}
+          className={`
+            ml-auto
+            transition-all
+            duration-500
+            ${ active ? 'opacity-100' : 'opacity-0 pointer-events-none' }
+          `}
+          />
+        
+        {/* <div className="flex flex-col gap-1 ml-auto text-right">
+          <span className="text-xs leading-none"><strong className="font-bold">cpu:</strong> {cpu_temp}&deg;</span>
+          <span className="text-xs leading-none"><strong className="font-bold">mem:</strong> {memory_used}%</span>
+          <span className="text-xs leading-none">{syncStamp}</span>
+        </div> */}
 
       </div>
 

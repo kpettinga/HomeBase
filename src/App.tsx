@@ -36,6 +36,7 @@ const App: React.FC = () => {
   // const appColor = useRoomStore(state => state.appColor)
   const rooms = useRoomStore( state => state.rooms as RoomInterface[] )
   const activeRoom = useRoomStore( state => state.activeRoom )
+  const setActiveRoom = useRoomStore(state => state.setActiveRoom)
 
   useEffect(() => {    
     const color = updateAppColor()
@@ -74,6 +75,16 @@ const App: React.FC = () => {
             className={`${ activeRoom ? activeRoom.id === room.id ? 'opacity-100 z-10' : 'opacity-0' : 'opacity-100' }`}
             />
         ) ) }
+        { activeRoom && 
+          <button 
+            className={`button button-outline w-full mb-[1px]`}
+            onClick={() => setActiveRoom(null)}
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+            </svg> Back
+          </button>
+        }
       </div>
     </div>
   )
